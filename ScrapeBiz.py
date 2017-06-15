@@ -3,9 +3,9 @@ from urllib.request import Request, urlopen
 from Scraper import download_coins
 import time
 import re
-
-urls = ["https://www.cryptocoincharts.info/coins/info/1001",
-        "https://www.cryptocoincharts.info/coins/info",
+import operator
+#"https://www.cryptocoincharts.info/coins/info/1001"
+urls = ["https://www.cryptocoincharts.info/coins/info",
         "https://www.cryptocoincharts.info/coins/info/101-to-1000"]
 
 req = Request("http://boards.4chan.org/biz/catalog", headers={'User-Agent': 'Mozilla/5.0'})
@@ -47,22 +47,26 @@ coins = download_coins(urls)
 list_coins=dict()
 for i in all_urls:
     print("Searching in " + i)
-    time.sleep(1)
+    #time.sleep(1)
     req = Request(i, headers={'User-Agent': 'Mozilla/5.0'})
     webpage = urlopen(req).read()
     soup     = BeautifulSoup(webpage,"html.parser")
 
     for text in soup.find_all("blockquote"):
         t = text.text.lower()
-        for symbol,name in coins.items():
+        for name,symbol in coins.items():
             num = len(re.findall(name+" ", t))
-            num2 = len(re.findall(symbol+" ", t))
+            num2 = len(re.findall(" "+symbol+" ", t))
             if (num > 0 or num2 > 0):
-                if symbol not in list_coins.keys():
-                    list_coins[symbol] = max(num,num2)
+                if name not in list_coins.keys():
+                    list_coins[name] = num+num2
                 else:
-                    list_coins[symbol] += num+num2
-    print(max(list(list_coins.values())))
+                    list_coins[name] += num+num2
+                #if len(name) <= 3 :
+                    #list_coins[name] /= 10
+    print("Best ones so far: \n")
+    for i,j in sorted(dict(sorted(list_coins.items(), key=operator.itemgetter(1), reverse=True)[:30]).items(), key = operator.itemgetter(1)):
+        print(i,j)
     print("\n\n\n\n")
             
         
