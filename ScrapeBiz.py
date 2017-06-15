@@ -5,6 +5,8 @@ import time
 import re
 import operator
 #"https://www.cryptocoincharts.info/coins/info/1001"
+#Just gonna
+#change some lines he
 urls = ["https://www.cryptocoincharts.info/coins/info",
         "https://www.cryptocoincharts.info/coins/info/101-to-1000"]
 
